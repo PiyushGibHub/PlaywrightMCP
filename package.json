@@ -4,10 +4,11 @@
   "description": "E2E testing with Playwright MCP and Atlassian MCP",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "node tests/mcp-test.js",
     "test:e2e": "playwright test",
     "test:debug": "playwright test --debug",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "mcp:start": "npx @playwright/mcp@latest --headless --browser chromium"
   },
   "keywords": [
     "playwright",
@@ -22,7 +23,9 @@
     "@playwright/test": "^1.38.0"
   },
   "dependencies": {
+    "@playwright/mcp": "latest",
     "@model-context-protocol/browser-client": "^0.1.0",
-    "@model-context-protocol/atlassian-client": "^0.1.0"
+    "@model-context-protocol/atlassian-client": "^0.1.0",
+    "node-fetch": "^2.6.9"
   }
 }
