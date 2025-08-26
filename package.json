@@ -1,0 +1,28 @@
+{
+  "name": "playwright-mcp-tests",
+  "version": "1.0.0",
+  "description": "E2E testing with Playwright MCP and Atlassian MCP",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "mcp",
+    "atlassian"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.38.0"
+  },
+  "dependencies": {
+    "@model-context-protocol/browser-client": "^0.1.0",
+    "@model-context-protocol/atlassian-client": "^0.1.0"
+  }
+}

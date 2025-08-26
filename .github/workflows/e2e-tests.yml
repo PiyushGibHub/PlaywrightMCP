@@ -1,0 +1,36 @@
+name: E2E Testing Pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ['*']
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Start Playwright MCP
+        run: npx @playwright/mcp@latest --headless --browser chromium &
+        env:
+          PLAYWRIGHT_MCP_PORT: 8080
+      - name: Generate Test Cases
+        run: npx copilot-agent --prompt "Generate 5 Playwright test cases from sds.md using Playwright MCP" --output tests/generated.spec.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch Test Cases from Jira
+        run: npx copilot-agent --prompt "Use Atlassian MCP to fetch test cases from Jira project 'MC02' where type='Test' and status='To Do'" --output tests/jira-tests.json
+        env:
+          ATLASSIAN_MCP_TOKEN: ${{ secrets.ATLASSIAN_MCP_TOKEN }}
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+      - name: Execute Tests
+        run: npx playwright test --config=playwright.config.js
+      - name: Report Failures to Jira
+        if: failure()
+        run: npx copilot-agent --prompt "Use Atlassian MCP to update Jira issues in 'MC02' with test failures, attach screenshots" --input tests/results.json
+        env:
+          ATLASSIAN_MCP_TOKEN: ${{ secrets.ATLASSIAN_MCP_TOKEN }}
+          JIRA_URL: ${{ secrets.JIRA_URL }}
